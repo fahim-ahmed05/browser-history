@@ -10,12 +10,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
       - name: Set up Python ${{ env.PYTHON_VER }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VER }}
-      - uses: actions/cache@v2
+      - uses: actions/cache@v5
         with:
           path: ~\AppData\Local\pip\Cache
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -27,7 +27,7 @@ jobs:
           pip install wheel
           pip install -r ./requirements.txt -t ./lib
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v5
         with:
           name: artifact
           path: |
