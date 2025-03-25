@@ -14,6 +14,7 @@ CHROME_DIR = Path(LOCAL_DATA, 'Google', 'Chrome', 'User Data', 'Default', 'Histo
 FIREFOX_DIR = Path(ROAMING, 'Mozilla', 'Firefox', 'Profiles')
 EDGE_DIR = Path(LOCAL_DATA, 'Microsoft', 'Edge', 'User Data', 'Default', 'History')
 BRAVE_DIR = Path(LOCAL_DATA, 'BraveSoftware', 'Brave-Browser', 'User Data', 'Default', 'History')
+BRAVE_NIGHTLY_DIR = Path(LOCAL_DATA, 'BraveSoftware', 'Brave-Browser-Nightly', 'User Data', 'Default', 'History')
 OPERA_DIR = Path(ROAMING, 'Opera Software', 'Opera Stable', 'Default', 'History')
 VIVALDI_DIR = Path(LOCAL_DATA, 'Vivaldi', 'User Data', 'Default', 'History')
 ARC_DIR = Path(LOCAL_DATA, 'Packages', 'TheBrowserCompany.Arc_ttt1ap7aakyb4', 'LocalCache', 'Local', 'Arc', 'User Data', 'Default', 'History')
@@ -29,6 +30,8 @@ def get(browser_name):
         return Edge()
     elif browser_name == 'brave':
         return Brave()
+    elif browser_name == 'brave nightly':
+        return BraveNightly()
     elif browser_name == 'opera':
         return Opera()
     elif browser_name == 'vivaldi':
@@ -141,6 +144,19 @@ class Brave(Base):
         """
         recents = self.query_history(self.database_path, 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC', limit)
         return self.get_history_items(recents)
+    
+class BraveNightly(Base):
+    """Brave Nightly Browser History"""
+
+    def __init__(self, database_path=BRAVE_NIGHTLY_DIR):
+        self.database_path = database_path
+
+    def history(self, limit=10):
+        """
+        Returns a list of the most recently visited sites in Brave's history.
+        """
+        recents = self.query_history(self.database_path, 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC', limit)
+        return self.get_history_items(recents)
         
 class Opera(Base):
     """Opera Browser History"""
@@ -237,6 +253,8 @@ class HistoryItem(object):
         elif isinstance(self.browser, (Edge)):
             return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
         elif isinstance(self.browser, (Brave)):
+            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
+        elif isinstance(self.browser, (BraveNightly)):
             return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
         elif isinstance(self.browser, (Opera)):
             return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
