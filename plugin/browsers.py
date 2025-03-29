@@ -22,7 +22,7 @@ ZEN_DIR = Path(ROAMING, 'zen', 'Profiles')
 FLOORP_DIR = Path(ROAMING, 'Floorp', 'Profiles')
 THORIUM_DIR = Path(LOCAL_DATA, 'Thorium', 'User Data', 'Default', 'History')
 
-def get(browser_name):
+def get(browser_name, custom_profile_path=None):
     if browser_name == 'chrome':
         return Chrome()
     elif browser_name == 'firefox':
@@ -45,6 +45,8 @@ def get(browser_name):
         return Floorp()
     elif browser_name == 'thorium':
         return Thorium()
+    elif browser_name == 'custom (chromium)':
+        return CustomChromium(custom_profile_path)  # Pass the custom path    
     else:
         raise ValueError('Invalid browser name')
 
@@ -247,6 +249,19 @@ class Thorium(Base):
         recents = self.query_history(self.database_path, 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC', limit)
         return self.get_history_items(recents)    
 
+class CustomChromium(Base):
+    """Custom Chromium-Based Browser History"""
+
+    def __init__(self, database_path):
+        self.database_path = Path(database_path, 'History')
+
+    def history(self, limit=10):
+        """
+        Returns a list of the most recently visited sites in Chromium-based browser history.
+        """
+        recents = self.query_history(self.database_path, 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC', limit)
+        return self.get_history_items(recents)
+
 class HistoryItem(object):
     """Representation of a history item"""
 
@@ -281,4 +296,6 @@ class HistoryItem(object):
         elif isinstance(self.browser, (Firefox)):
             return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
         elif isinstance(self.browser, (Thorium)):
+            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
+        elif isinstance(self.browser, (CustomChromium)):
             return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
