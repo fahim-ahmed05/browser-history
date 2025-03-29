@@ -19,7 +19,7 @@ OPERA_DIR = Path(ROAMING, 'Opera Software', 'Opera Stable', 'Default', 'History'
 VIVALDI_DIR = Path(LOCAL_DATA, 'Vivaldi', 'User Data', 'Default', 'History')
 ARC_DIR = Path(LOCAL_DATA, 'Packages', 'TheBrowserCompany.Arc_ttt1ap7aakyb4', 'LocalCache', 'Local', 'Arc', 'User Data', 'Default', 'History')
 ZEN_DIR = Path(ROAMING, 'zen', 'Profiles')
-Floorp_DIR = Path(ROAMING, 'Floorp', 'Profiles')
+FLOORP_DIR = Path(ROAMING, 'Floorp', 'Profiles')
 
 def get(browser_name):
     if browser_name == 'chrome':
@@ -217,7 +217,7 @@ class Zen(Base):
 class Floorp(Base):
     """Floorp Browser History"""
 
-    def __init__(self, database_path=Floorp_DIR):
+    def __init__(self, database_path=FLOORP_DIR):
         # Floorp database is not in a static location, so we need to find it
         self.database_path = self.find_database(database_path)
 
