@@ -17,6 +17,7 @@ body:
         - Floorp
         - Thorium
         - Custom (Chromium)
+        - Custom (Firefox)
   - type: inputWithFolderBtn
     attributes:
       name: custom_profile_path
