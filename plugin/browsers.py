@@ -20,6 +20,7 @@ VIVALDI_DIR = Path(LOCAL_DATA, 'Vivaldi', 'User Data', 'Default', 'History')
 ARC_DIR = Path(LOCAL_DATA, 'Packages', 'TheBrowserCompany.Arc_ttt1ap7aakyb4', 'LocalCache', 'Local', 'Arc', 'User Data', 'Default', 'History')
 ZEN_DIR = Path(ROAMING, 'zen', 'Profiles')
 FLOORP_DIR = Path(ROAMING, 'Floorp', 'Profiles')
+THORIUM_DIR = Path(LOCAL_DATA, 'Thorium', 'User Data', 'Default', 'History')
 
 def get(browser_name):
     if browser_name == 'chrome':
@@ -42,6 +43,8 @@ def get(browser_name):
         return Zen()
     elif browser_name == 'floorp':
         return Floorp()
+    elif browser_name == 'thorium':
+        return Thorium()
     else:
         raise ValueError('Invalid browser name')
 
@@ -230,6 +233,19 @@ class Floorp(Base):
         """Most recent Firefox history"""
         recents = self.query_history(self.database_path, 'SELECT url, title, visit_date FROM moz_places INNER JOIN moz_historyvisits on moz_historyvisits.place_id = moz_places.id ORDER BY visit_date DESC', limit)
         return self.get_history_items(recents)
+    
+class Thorium(Base):
+    """Thorium History"""
+
+    def __init__(self, database_path=THORIUM_DIR):
+        self.database_path = database_path
+
+    def history(self, limit=10):
+        """
+        Returns a list of the most recently visited sites in Thorium's history.
+        """
+        recents = self.query_history(self.database_path, 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC', limit)
+        return self.get_history_items(recents)    
 
 class HistoryItem(object):
     """Representation of a history item"""
@@ -264,3 +280,5 @@ class HistoryItem(object):
             return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
         elif isinstance(self.browser, (Firefox)):
             return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
+        elif isinstance(self.browser, (Thorium)):
+            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
