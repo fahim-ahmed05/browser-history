@@ -46,7 +46,9 @@ def get(browser_name, custom_profile_path=None):
     elif browser_name == 'thorium':
         return Thorium()
     elif browser_name == 'custom (chromium)':
-        return CustomChromium(custom_profile_path)  # Pass the custom path    
+        return CustomChromium(custom_profile_path)  # Pass the custom path
+    elif browser_name == 'custom (firefox)':
+        return CustomFirefox(custom_profile_path)  # Pass the custom path  
     else:
         raise ValueError('Invalid browser name')
 
@@ -262,6 +264,17 @@ class CustomChromium(Base):
         recents = self.query_history(self.database_path, 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC', limit)
         return self.get_history_items(recents)
 
+class CustomFirefox(Base):
+    """Custom Firefox-Based Browser History"""
+
+    def __init__(self, database_path):
+        self.database_path = Path(database_path, 'places.sqlite')
+
+    def history(self, limit=10):
+        """Most recent Firefox history"""
+        recents = self.query_history(self.database_path, 'SELECT url, title, visit_date FROM moz_places INNER JOIN moz_historyvisits on moz_historyvisits.place_id = moz_places.id ORDER BY visit_date DESC', limit)
+        return self.get_history_items(recents)
+
 class HistoryItem(object):
     """Representation of a history item"""
 
@@ -299,3 +312,5 @@ class HistoryItem(object):
             return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
         elif isinstance(self.browser, (CustomChromium)):
             return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
+        elif isinstance(self.browser, (CustomFirefox)):
+            return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
