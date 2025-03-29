@@ -16,3 +16,8 @@ body:
         - Zen
         - Floorp
         - Thorium
+        - Custom (Chromium)
+  - type: inputWithFolderBtn
+    attributes:
+      name: custom_profile_path
+      label: Custom Profile Folder
