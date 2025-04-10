@@ -290,27 +290,9 @@ class HistoryItem(object):
         self.last_visit_time = last_visit_time
 
     def timestamp(self):
-        if isinstance(self.browser, (Chrome)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (Firefox)):
-            return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
-        elif isinstance(self.browser, (Edge)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (Brave)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (BraveNightly)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (Opera)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (Vivaldi)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (Zen)):
-            return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
-        elif isinstance(self.browser, (Firefox)):
-            return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
-        elif isinstance(self.browser, (Thorium)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (CustomChromium)):
-            return datetime((self.last_visit_time/1000000)-11644473600, 'unixepoch', 'localtime')
-        elif isinstance(self.browser, (CustomFirefox)):
+        if isinstance(self.browser, (Chrome, Edge, Brave, BraveNightly, Opera, Vivaldi, Thorium, CustomChromium)):
+            # Chrome-based browsers use a timestamp offset from 1601-01-01
+            return datetime.fromtimestamp(self.last_visit_time / 1000000 - 11644473600)
+        elif isinstance(self.browser, (Firefox, Zen, Floorp, CustomFirefox)):
+            # Firefox-based browsers use a standard Unix timestamp in microseconds
             return datetime.fromtimestamp(self.last_visit_time / 1000000.0)
