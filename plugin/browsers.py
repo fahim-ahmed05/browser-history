@@ -30,20 +30,29 @@ BROWSER_PATHS = {
 # Constants for timestamp conversion
 CHROMIUM_EPOCH_OFFSET = 11644473600  # seconds from 1601 to 1970
 
+
 class Browser:
-    def __init__(self, name, query, timestamp_type='chromium', custom_path=None, dynamic_profile=False, profile_glob=None, db_file='History'):
+    def __init__(self, name, query, timestamp_type='chromium', custom_path=None, dynamic_profile=False, profile_glob=None, profile_globs=None, db_file='History'):
         self.name = name
         self.query = query
         self.timestamp_type = timestamp_type
         self.dynamic_profile = dynamic_profile
-        self.profile_glob = profile_glob
         self.db_file = db_file
 
         if custom_path:
             self.database_path = Path(custom_path)
         elif dynamic_profile:
             profile_base = BROWSER_PATHS.get(name)
-            profile_folder = next(Path(profile_base).glob(profile_glob))
+            profile_folder = None
+            # Support both single glob and multiple globs
+            patterns = profile_globs if profile_globs else [profile_glob]
+            for pattern in patterns:
+                matches = list(Path(profile_base).glob(pattern))
+                if matches:
+                    profile_folder = matches[0]
+                    break
+            if not profile_folder:
+                raise FileNotFoundError(f"No matching profile found for {name} with patterns: {patterns}")
             self.database_path = profile_base / profile_folder / db_file
         else:
             self.database_path = BROWSER_PATHS.get(name)
