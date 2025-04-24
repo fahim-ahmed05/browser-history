@@ -22,6 +22,7 @@ BROWSER_PATHS = {
     'arc': Path(LOCAL_DATA, 'Packages', 'TheBrowserCompany.Arc_ttt1ap7aakyb4', 'LocalCache', 'Local', 'Arc', 'User Data', 'Default', 'History'),
     'thorium': Path(LOCAL_DATA, 'Thorium', 'User Data', 'Default', 'History'),
     'firefox': Path(ROAMING, 'Mozilla', 'Firefox', 'Profiles'),
+    'firefox nightly': Path(ROAMING, 'Mozilla', 'Firefox', 'Profiles'),
     'zen': Path(ROAMING, 'zen', 'Profiles'),
     'floorp': Path(ROAMING, 'Floorp', 'Profiles'),
 }
@@ -90,9 +91,10 @@ FIREFOX_QUERY = 'SELECT url, title, visit_date FROM moz_places INNER JOIN moz_hi
 
 # These are the default profile names for various Firefox variants
 FIREFOX_VARIANTS = {
-    'firefox': ['*.default-release'],
-    'floorp': ['*.default-release'],
-    'zen': ['*.Default (alpha)', '*.default', 'Default Profile']
+    'firefox': ['*.default-release', '*.Default User', '*.Profile 1'],
+    'firefox nightly': ['*.default-release', '*.Default User', '*.Profile 1'],
+    'floorp': ['*.default-release', '*.Default User', '*.Profile 1'],
+    'zen': ['*.Default (alpha)', '*.default', '*.Default Profile']
 }
 
 # Factory function
