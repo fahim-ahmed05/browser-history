@@ -7,10 +7,13 @@ HISTORY_GLYPH = ''
 DEFAULT_BROWSER = 'chrome'
 
 def remove_duplicates(results):
+    seen = set()
+    unique_results = []
     for item in results:
-        if item in results:
-            results.remove(item)
-    return results
+        if item not in seen:
+            unique_results.append(item)
+            seen.add(item)
+    return unique_results
 
 class BrowserHistory(Flox):
 
@@ -69,4 +72,4 @@ class BrowserHistory(Flox):
         self.show_msg("Copied!", f"{data}")
 
 if __name__ == "__main__":
-    BrowserHistory()
+    BrowserHistory().run()
