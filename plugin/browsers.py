@@ -32,7 +32,7 @@ CHROMIUM_EPOCH_OFFSET = 11644473600  # seconds from 1601 to 1970
 
 
 class Browser:
-    def __init__(self, name, query, timestamp_type='chromium', custom_path=None, dynamic_profile=False, profile_glob=None, profile_globs=None, db_file='History'):
+    def __init__(self, name, query, timestamp_type='chromium', custom_path=None, dynamic_profile=False, db_file='History'):
         self.name = name
         self.query = query
         self.timestamp_type = timestamp_type
@@ -43,17 +43,16 @@ class Browser:
             self.database_path = Path(custom_path)
         elif dynamic_profile:
             profile_base = BROWSER_PATHS.get(name)
-            profile_folder = None
-            # Support both single glob and multiple globs
-            patterns = profile_globs if profile_globs else [profile_glob]
-            for pattern in patterns:
-                matches = list(Path(profile_base).glob(pattern))
-                if matches:
-                    profile_folder = matches[0]
+            if not profile_base or not Path(profile_base).exists():
+                raise FileNotFoundError(f"Profile base not found for {name}: {profile_base}")
+
+            for profile_folder in Path(profile_base).iterdir():
+                candidate_db = profile_folder / db_file
+                if candidate_db.exists():
+                    self.database_path = candidate_db
                     break
-            if not profile_folder:
-                raise FileNotFoundError(f"No matching profile found for {name} with patterns: {patterns}")
-            self.database_path = profile_base / profile_folder / db_file
+            else:
+                raise FileNotFoundError(f"No valid profile found with {db_file} in {profile_base}")
         else:
             self.database_path = BROWSER_PATHS.get(name)
 
@@ -84,6 +83,7 @@ class Browser:
         elif self.timestamp_type == 'unix_us':
             return datetime.fromtimestamp(raw_time / 1_000_000)
 
+
 class HistoryItem:
     def __init__(self, browser, url, title, last_visit_time):
         self.browser = browser
@@ -94,33 +94,24 @@ class HistoryItem:
     def timestamp(self):
         return self.browser.convert_timestamp(self.last_visit_time)
 
+
 # Queries
 CHROMIUM_QUERY = 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC'
 FIREFOX_QUERY = 'SELECT url, title, visit_date FROM moz_places INNER JOIN moz_historyvisits ON moz_historyvisits.place_id = moz_places.id ORDER BY visit_date DESC'
-
-# These are the default profile names for various Firefox variants
-FIREFOX_VARIANTS = {
-    'firefox': ['*.default-release', '*.Default User', '*.Profile 1'],
-    'firefox nightly': ['*.default-release', '*.Default User', '*.Profile 1'],
-    'floorp': ['*.default-release', '*.Default User', '*.Profile 1'],
-    'zen': ['*.Default (alpha)', '*.default', '*.Default Profile']
-}
 
 # Factory function
 def get(browser_name, custom_profile_path=None):
     browser_name = browser_name.lower()
     if browser_name in ['chrome', 'edge', 'brave', 'brave nightly', 'opera', 'vivaldi', 'arc', 'thorium']:
         return Browser(browser_name, CHROMIUM_QUERY, 'chromium')
-    elif browser_name in FIREFOX_VARIANTS:
-        profile_globs = FIREFOX_VARIANTS[browser_name]
+    elif browser_name in ['firefox', 'firefox nightly', 'zen', 'floorp']:
         return Browser(
-           browser_name,
-           FIREFOX_QUERY,
-           'unix_us',
-          dynamic_profile=True,
-           profile_globs=profile_globs,
-          db_file='places.sqlite'
-      )
+            browser_name,
+            FIREFOX_QUERY,
+            'unix_us',
+            dynamic_profile=True,
+            db_file='places.sqlite'
+        )
     elif browser_name == 'custom (chromium)':
         return Browser('custom', CHROMIUM_QUERY, 'chromium', custom_path=Path(custom_profile_path) / 'History')
     elif browser_name == 'custom (firefox)':
