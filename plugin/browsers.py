@@ -30,7 +30,6 @@ FIREFOX_BASES = {
     'firefox nightly': Path(ROAMING, 'Mozilla', 'Firefox', 'Profiles'),
     'zen': Path(ROAMING, 'zen', 'Profiles'),
     'floorp': Path(ROAMING, 'Floorp', 'Profiles'),
-    'waterfox': Path(ROAMING, 'Waterfox', 'Waterfox', 'Profiles')
 }
 
 CHROMIUM_QUERY = 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC'
@@ -121,8 +120,10 @@ class Browser:
 
     def convert_timestamp(self, raw_time):
         if self.timestamp_type == 'chromium':
+            # Chromium uses Windows FILETIME epoch (1601-01-01)
             return datetime.fromtimestamp(raw_time / 1_000_000 - CHROMIUM_EPOCH_OFFSET)
         elif self.timestamp_type == 'unix_us':
+            # Firefox uses Unix epoch in microseconds
             return datetime.fromtimestamp(raw_time / 1_000_000)
 
 
@@ -134,6 +135,9 @@ class HistoryItem:
         self.last_visit_time = last_visit_time
 
     def timestamp(self):
+        """
+        Normalize the timestamp to a Python datetime object.
+        """
         return self.browser.convert_timestamp(self.last_visit_time)
 
 
