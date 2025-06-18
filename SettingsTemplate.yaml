@@ -18,24 +18,24 @@ body:
         - Floorp
         - Thorium
         - Waterfox
-        - Profile Folder (Chromium)
-        - Profile Folder (Firefox)
+        - Custom Chromium Profile
+        - Custom Firefox Profile
   - type: checkbox
     attributes:
       name: profile_last_updated
-      label: Select Profile Based on Last Updated Time
+      label: Automatically Select the Most Recently Used Profile
       defaultValue: 'false'
   - type: inputWithFolderBtn
     attributes:
       name: custom_profile_path
-      label: Profile Folder 
+      label: Path to Browser Profile Folder (Required for Custom Profiles)
   - type: checkbox
     attributes:
       name: all_browsers_history
-      label: Show History From All Browsers
+      label: Combine History from All Browsers
       defaultValue: 'false'
   - type: input
     attributes:
       name: history_limit
-      label: History Limit (Per Browser)
+      label: Maximum Number of History Entries to Fetch (Per Browser)
       defaultValue: '10000'
