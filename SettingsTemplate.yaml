@@ -17,9 +17,25 @@ body:
         - Zen
         - Floorp
         - Thorium
-        - Custom (Chromium)
-        - Custom (Firefox)
+        - Waterfox
+        - Profile Folder (Chromium)
+        - Profile Folder (Firefox)
+  - type: checkbox
+    attributes:
+      name: profile_last_updated
+      label: Select Profile Based on Last Updated Time
+      defaultValue: 'false'
   - type: inputWithFolderBtn
     attributes:
       name: custom_profile_path
-      label: Custom Profile Folder
+      label: Profile Folder 
+  - type: checkbox
+    attributes:
+      name: all_browsers_history
+      label: Show History From All Browsers
+      defaultValue: 'false'
+  - type: input
+    attributes:
+      name: history_limit
+      label: History Limit (Per Browser)
+      defaultValue: '10000'
