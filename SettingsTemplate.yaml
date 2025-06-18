@@ -2,7 +2,8 @@ body:
   - type: dropdown
     attributes:
       name: default_browser
-      label: Default Browser
+      label: Choose Your Browser or Profile
+      description: Pick the browser you use. If you want to use a specific profile folder, choose "Chromium Profile" or "Firefox Profile".
       defaultValue: Chrome
       options:
         - Chrome
@@ -18,17 +19,18 @@ body:
         - Floorp
         - Thorium
         - Waterfox
-        - Custom Chromium Profile
-        - Custom Firefox Profile
+        - Chromium Profile
+        - Firefox Profile
   - type: checkbox
     attributes:
       name: profile_last_updated
-      label: Automatically Select the Most Recently Used Profile
+      label: Automatically Use the Most Recently Used Profile
       defaultValue: 'false'
   - type: inputWithFolderBtn
     attributes:
       name: custom_profile_path
-      label: Path to Browser Profile Folder (Required for Custom Profiles)
+      label: Folder Path to Your Browser Profile
+      description: Only needed if you picked "Chromium Profile" or "Firefox Profile" above. Select the folder where your browser's profile is stored.
   - type: checkbox
     attributes:
       name: all_browsers_history
@@ -37,5 +39,8 @@ body:
   - type: input
     attributes:
       name: history_limit
-      label: Maximum Number of History Entries to Fetch (Per Browser)
+      label: Number of History Items to Load 
       defaultValue: '10000'
+      description: This is the maximum number of history entries to load for each browser. The default is 10,000.
+
+
