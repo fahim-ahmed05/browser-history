@@ -14,7 +14,7 @@ class BrowserHistory(Flox):
         self.custom_profile_path = self.settings.get('custom_profile_path', '')
         self.profile_last_updated = self.settings.get('profile_last_updated', False)
         self.all_browsers_history = self.settings.get('all_browsers_history', False)
-        self.history_limit = int(self.settings.get('history_limit', 1000))  # Default limit is 1000
+        self.history_limit = int(self.settings.get('history_limit', 10000))  # Default limit is 10000
 
         # Initialize browser(s)
         if self.all_browsers_history:
