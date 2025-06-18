@@ -5,6 +5,7 @@ import browsers
 HISTORY_GLYPH = ''
 DEFAULT_BROWSER = 'chrome'
 
+
 class BrowserHistory(Flox):
 
     def __init__(self):
@@ -13,7 +14,7 @@ class BrowserHistory(Flox):
         self.custom_profile_path = self.settings.get('custom_profile_path', '')
         self.profile_last_updated = self.settings.get('profile_last_updated', False)
         self.all_browsers_history = self.settings.get('all_browsers_history', False)
-        self.history_limit = int(self.settings.get('history_limit', 10000))  # Default limit is 10000
+        self.history_limit = int(self.settings.get('history_limit', 1000))  # Default limit is 1000
 
         # Initialize browser(s)
         if self.all_browsers_history:
@@ -96,13 +97,16 @@ class BrowserHistory(Flox):
             except FileNotFoundError:
                 continue  # Skip browsers with missing databases
 
-        # Deduplicate and sort by last visit time
+        # Deduplicate by URL
         seen_urls = set()
         unique_history = []
-        for item in sorted(combined_history, key=lambda x: x.last_visit_time, reverse=True):
+        for item in combined_history:
             if item.url not in seen_urls:
                 unique_history.append(item)
                 seen_urls.add(item.url)
+
+        # Sort by normalized timestamp (most recent first)
+        unique_history.sort(key=lambda x: x.timestamp(), reverse=True)
 
         # Filter by query
         return [
@@ -129,6 +133,13 @@ class BrowserHistory(Flox):
     def copy_to_clipboard(self, data):
         pyperclip.copy(data)
         self.show_msg("Copied!", f"{data}")
+
+    def run(self):
+        """
+        Entry point for Flow Launcher.
+        This method is required to start the plugin.
+        """
+        pass  # Ensure this method exists
 
 
 if __name__ == "__main__":
