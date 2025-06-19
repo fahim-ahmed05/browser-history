@@ -20,7 +20,7 @@ Make sure you have [Flow Launcher](https://www.flowlauncher.com/)  installed on 
 3. Click **Install** to add the plugin to your Flow Launcher setup.
 
 Alternatively, you can manually install the plugin:
-1. Clone this repository or download the latest release as a `.zip` file.
+1. Download the latest release.
 2. Extract the files and place the plugin folder in your Flow Launcher plugins directory: `%AppData%\FlowLauncher\Plugins`.
 3. Restart Flow Launcher to load the new plugin.
 
