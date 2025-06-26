@@ -17,12 +17,12 @@ CHROMIUM_PROFILE_BASES = {
     'brave nightly': Path(LOCAL_DATA, 'BraveSoftware', 'Brave-Browser-Nightly', 'User Data'),
     'vivaldi': Path(LOCAL_DATA, 'Vivaldi', 'User Data'),
     'arc': Path(LOCAL_DATA, 'Packages', 'TheBrowserCompany.Arc_ttt1ap7aakyb4', 'LocalCache', 'Local', 'Arc', 'User Data'),
-    'thorium': Path(LOCAL_DATA, 'Thorium', 'User Data'),
+    'thorium': Path(LOCAL_DATA, 'Thorium', 'User Data')
 }
 
 # Single fixed path browsers
 FIXED_PATHS = {
-    'opera': Path(ROAMING, 'Opera Software', 'Opera Stable', 'Default', 'History'),
+    'opera': Path(ROAMING, 'Opera Software', 'Opera Stable', 'Default', 'History')
 }
 
 FIREFOX_BASES = {
@@ -30,13 +30,13 @@ FIREFOX_BASES = {
     'firefox nightly': Path(ROAMING, 'Mozilla', 'Firefox', 'Profiles'),
     'zen': Path(ROAMING, 'zen', 'Profiles'),
     'floorp': Path(ROAMING, 'Floorp', 'Profiles'),
+    'waterfox': Path(ROAMING, 'Waterfox', 'Profiles')
 }
 
 CHROMIUM_QUERY = 'SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC'
 FIREFOX_QUERY = 'SELECT url, title, visit_date FROM moz_places INNER JOIN moz_historyvisits ON moz_historyvisits.place_id = moz_places.id ORDER BY visit_date DESC'
 
 CHROMIUM_EPOCH_OFFSET = 11644473600
-
 
 class Browser:
     def __init__(
