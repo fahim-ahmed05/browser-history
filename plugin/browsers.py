@@ -23,7 +23,7 @@ CHROMIUM_PROFILE_BASES = {
     'vivaldi': Path(LOCAL_DATA, 'Vivaldi', 'User Data'),
     'arc': Path(LOCAL_DATA, 'Packages', 'TheBrowserCompany.Arc_ttt1ap7aakyb4', 'LocalCache', 'Local', 'Arc', 'User Data'),
     'thorium': Path(LOCAL_DATA, 'Thorium', 'User Data'),
-    'helium': Path(LOCAL_DATA, 'input', 'Helium', 'User Data')
+    'helium': Path(LOCAL_DATA, 'imput', 'Helium', 'User Data')
 }
 
 # Single fixed path browsers
