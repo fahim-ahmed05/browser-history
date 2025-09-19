@@ -47,8 +47,8 @@ The plugin provides several settings to customize its behavior:
 - Ensure that Flow Launcher has permission to access your browser's history database.
 - Verify that the browser's profile folder exists and contains the required files (`History` for Chromium-based browsers, `places.sqlite` for Firefox).
 - If using a custom profile: the path MUST be the folder containing the file, e.g.:
-	- Chromium: `C:\\Users\\You\\AppData\\Local\\BraveSoftware\\Brave-Browser\\User Data\\Default`
-	- Firefox: `C:\\Users\\You\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\xxxxxxxx.default-release`
+	- Chromium: `%LocalAppData%\BraveSoftware\Brave-Browser\User Data\Default`
+	- Firefox: `%AppData%\Mozilla\Firefox\Profiles\xxxxxxxx.default-release`
 
 ### 2. Missing or Incorrect Results
 - Check the plugin settings to ensure the correct browser or profile is selected.
