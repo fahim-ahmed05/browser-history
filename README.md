@@ -35,9 +35,9 @@ The plugin provides several settings to customize its behavior:
 
 | Setting Name                     | Description                                                                                   | Default Value       |
 |:----------------------------------|:-----------------------------------------------------------------------------------------------|:---------------------:|
-| **Default Browser or Profile**   | Select the browser or profile to use by default. Choose "Specific Chromium Profile" or "Specific Firefox Profile" for custom paths. | `Chrome`            |
+| **Default Browser or Profile**   | Select the browser or profile to use by default. Choose **Chromium Profile** or **Firefox Profile** to target a specific profile directory. | `Chrome`            |
 | **Automatically Select Profile** | When enabled, the plugin selects the most recently updated profile for browsers that support multiple profiles. | `false`             |
-| **Path to Profile Folder**       | Required if you select "Chromium Profile" or "Firefox Profile." Provide the full path to the folder containing the browser's profile data. | `N/A`                 |
+| **Path to Profile Folder**       | Required ONLY if you select **Chromium Profile** or **Firefox Profile**. Must be a DIRECTORY (profile folder), not the History / places.sqlite file. | `N/A`                 |
 | **Combine History**              | When enabled, the plugin fetches and combines history from all supported browsers, including custom profiles. | `false`             |
 | **History Limit**                | Set the maximum number of history entries to fetch per browser. Decrease this value if you experience slowdowns. | `10000`             |
 
@@ -46,10 +46,13 @@ The plugin provides several settings to customize its behavior:
 ### 1. Plugin Not Working
 - Ensure that Flow Launcher has permission to access your browser's history database.
 - Verify that the browser's profile folder exists and contains the required files (`History` for Chromium-based browsers, `places.sqlite` for Firefox).
+- If using a custom profile: the path MUST be the folder containing the file, e.g.:
+	- Chromium: `C:\\Users\\You\\AppData\\Local\\BraveSoftware\\Brave-Browser\\User Data\\Default`
+	- Firefox: `C:\\Users\\You\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\xxxxxxxx.default-release`
 
 ### 2. Missing or Incorrect Results
 - Check the plugin settings to ensure the correct browser or profile is selected.
-- If using a custom profile, confirm that the provided path is accurate.
+- If using a custom profile, confirm that the provided path is a directory (not a file) and that it contains the expected database file.
 
 ### 3. Slow Performance
 - Reduce the **History Limit** in the settings to fetch fewer entries.
@@ -57,6 +60,7 @@ The plugin provides several settings to customize its behavior:
 
 ### 4. Errors in Logs
 - If you encounter errors, check the Flow Launcher logs for details: `%AppData%\FlowLauncher\Logs`
+- For custom profiles, the error message will include the attempted database path—verify it exists.
 
 ## ❓ Reporting Issues
 
