@@ -3,7 +3,6 @@ body:
     attributes:
       name: default_browser
       label: Choose Your Browser or Profile
-      description: Pick the browser you use. If you want to use a specific profile folder, choose "Chromium Profile" or "Firefox Profile".
       defaultValue: Chrome
       options:
         - Chrome
@@ -31,7 +30,7 @@ body:
     attributes:
       name: custom_profile_path
       label: Folder Path to Your Browser Profile
-      description: Only needed if you picked "Chromium Profile" or "Firefox Profile" above. Select the folder where your browser's profile is stored.
+      description: Only needed if you picked "Chromium Profile" or "Firefox Profile" above.
   - type: checkbox
     attributes:
       name: all_browsers_history
