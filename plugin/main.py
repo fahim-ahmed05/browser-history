@@ -2,8 +2,11 @@ from flox import Flox, ICON_HISTORY, ICON_BROWSER, ICON_FILE
 import pyperclip
 import browsers
 
+# Constants
 HISTORY_GLYPH = ''
 DEFAULT_BROWSER = 'chrome'
+CUSTOM_CHROMIUM = 'chromium profile'
+CUSTOM_FIREFOX = 'firefox profile'
 
 
 class BrowserHistory(Flox):
@@ -15,6 +18,7 @@ class BrowserHistory(Flox):
         self.profile_last_updated = self.settings.get('profile_last_updated', False)
         self.all_browsers_history = self.settings.get('all_browsers_history', False)
         self.history_limit = int(self.settings.get('history_limit', 10000))  # Default limit is 10000
+        self.init_error = None  # Store any initialization error to display in query()
 
         # Initialize browser(s)
         if self.all_browsers_history:
@@ -25,16 +29,8 @@ class BrowserHistory(Flox):
 
             # Include custom browsers if a custom profile path is provided
             if self.custom_profile_path:
-                custom_chromium = browsers.get(
-                    'custom (chromium)',
-                    custom_profile_path=self.custom_profile_path,
-                    profile_last_updated=self.profile_last_updated
-                )
-                custom_firefox = browsers.get(
-                    'custom (firefox)',
-                    custom_profile_path=self.custom_profile_path,
-                    profile_last_updated=self.profile_last_updated
-                )
+                custom_chromium = browsers.get(CUSTOM_CHROMIUM, custom_profile_path=self.custom_profile_path, profile_last_updated=self.profile_last_updated)
+                custom_firefox = browsers.get(CUSTOM_FIREFOX, custom_profile_path=self.custom_profile_path, profile_last_updated=self.profile_last_updated)
 
                 if custom_chromium:
                     self.browsers.append(custom_chromium)
@@ -44,44 +40,59 @@ class BrowserHistory(Flox):
             # Filter out None values (browsers with missing profiles)
             self.browsers = [browser for browser in self.browsers if browser is not None]
         else:
-            self.browser = browsers.get(
-                self.default_browser,
-                self.custom_profile_path,
-                profile_last_updated=self.profile_last_updated
-            )
-            if self.browser is None:
-                self.add_item(
-                    title='Error',
-                    subtitle=f"Default browser '{self.default_browser}' not found or profile missing."
+            # Validate custom profile path requirement
+            if self.default_browser in (CUSTOM_CHROMIUM, CUSTOM_FIREFOX) and not self.custom_profile_path:
+                self.browser = None
+                self.init_error = "You selected a custom profile, but no folder path was provided in settings."
+            else:
+                self.browser = browsers.get(
+                    self.default_browser,
+                    custom_profile_path=self.custom_profile_path,
+                    profile_last_updated=self.profile_last_updated
                 )
+                if self.browser is None:
+                    self.init_error = f"Default browser '{self.default_browser}' not found or its profile/database is missing."
 
     def query(self, query):
         try:
+            # Surface any initialization error immediately
+            if not self.all_browsers_history and (self.browser is None or self.init_error):
+                self.add_item(
+                    title='Browser not available',
+                    subtitle=self.init_error or 'Unknown error initializing browser.'
+                )
+                return
+
+            if self.all_browsers_history and (not hasattr(self, 'browsers') or not self.browsers):
+                self.add_item(
+                    title='No browser histories found',
+                    subtitle='Could not locate any supported browser profile databases.'
+                )
+                return
+
+            source_items = []
             if self.all_browsers_history:
-                combined_history = self._get_combined_history(query)
-                for idx, item in enumerate(combined_history):
+                source_items = self._get_combined_history(query)
+                if getattr(self, '_warnings', None):
                     self.add_item(
-                        title=item.title,
-                        subtitle=f"{idx + 1}. {item.url}",
-                        icon=ICON_HISTORY,
-                        glyph=HISTORY_GLYPH,
-                        method=self.browser_open,
-                        parameters=[item.url],
-                        context=[item.title, item.url]
+                        title='Some browsers were skipped',
+                        subtitle='; '.join(self._warnings)[:150],
+                        icon=ICON_BROWSER
                     )
             else:
-                history = self.browser.history(limit=self.history_limit)
-                for idx, item in enumerate(history):
-                    if query.lower() in item.title.lower() or query.lower() in item.url.lower():
-                        self.add_item(
-                            title=item.title,
-                            subtitle=f"{idx + 1}. {item.url}",
-                            icon=ICON_HISTORY,
-                            glyph=HISTORY_GLYPH,
-                            method=self.browser_open,
-                            parameters=[item.url],
-                            context=[item.title, item.url]
-                        )
+                history = self.browser.history(limit=self.history_limit) if self.browser else []
+                source_items = [h for h in history if query.lower() in h.title.lower() or query.lower() in h.url.lower()]
+
+            for idx, item in enumerate(source_items):
+                self.add_item(
+                    title=item.title,
+                    subtitle=f"{idx + 1}. {item.url}",
+                    icon=ICON_HISTORY,
+                    glyph=HISTORY_GLYPH,
+                    method=self.browser_open,
+                    parameters=[item.url],
+                    context=[item.title, item.url]
+                )
         except Exception as e:
             self.add_item(
                 title='An error occurred',
@@ -91,11 +102,16 @@ class BrowserHistory(Flox):
     def _get_combined_history(self, query):
         """Combine histories from all browsers, deduplicate, and sort."""
         combined_history = []
+        self._warnings = []
         for browser in self.browsers:
             try:
                 combined_history.extend(browser.history(limit=self.history_limit))
             except FileNotFoundError:
                 continue  # Skip browsers with missing databases
+            except OSError as e:
+                # Collect problematic browsers but do not abort whole aggregation
+                self._warnings.append(f"{browser.name}: {e}")
+                continue
 
         # Deduplicate by URL
         seen_urls = set()
@@ -113,6 +129,8 @@ class BrowserHistory(Flox):
             item for item in unique_history
             if query.lower() in item.title.lower() or query.lower() in item.url.lower()
         ]
+
+        # (Unreachable with current structure; kept for clarity.)
 
     def context_menu(self, data):
         self.add_item(
