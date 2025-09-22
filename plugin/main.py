@@ -19,7 +19,7 @@ class BrowserHistory(Flox):
         self.profile_last_updated = self.settings.get('profile_last_updated', False)
         self.all_browsers_history = self.settings.get('all_browsers_history', False)
         self.history_limit = int(self.settings.get('history_limit', 10000))  # Default limit is 10000
-        blocked_domains_str = self.settings.get('blocked_domains', '')
+        blocked_domains_str = self.settings.get('blocked_domains') or ''
         self.blocked_domains = [domain.strip().lower() for domain in blocked_domains_str.split(',') if domain.strip()]
         self.init_error = None  # Store any initialization error to display in query()
 
