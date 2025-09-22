@@ -1,6 +1,7 @@
 from flox import Flox, ICON_HISTORY, ICON_BROWSER, ICON_FILE
 import pyperclip
 import browsers
+from urllib.parse import urlparse
 
 # Constants
 HISTORY_GLYPH = ''
@@ -18,6 +19,8 @@ class BrowserHistory(Flox):
         self.profile_last_updated = self.settings.get('profile_last_updated', False)
         self.all_browsers_history = self.settings.get('all_browsers_history', False)
         self.history_limit = int(self.settings.get('history_limit', 10000))  # Default limit is 10000
+        blocked_domains_str = self.settings.get('blocked_domains', '')
+        self.blocked_domains = [domain.strip().lower() for domain in blocked_domains_str.split(',') if domain.strip()]
         self.init_error = None  # Store any initialization error to display in query()
 
         # Initialize browser(s)
@@ -53,6 +56,16 @@ class BrowserHistory(Flox):
                 if self.browser is None:
                     self.init_error = f"Default browser '{self.default_browser}' not found or its profile/database is missing."
 
+    def _is_domain_blocked(self, url):
+        """Check if the domain of the given URL is in the blocked domains list."""
+        if not self.blocked_domains:
+            return False
+        try:
+            domain = urlparse(url).netloc.lower()
+            return any(blocked_domain in domain for blocked_domain in self.blocked_domains)
+        except:
+            return False
+
     def query(self, query):
         try:
             # Surface any initialization error immediately
@@ -82,6 +95,7 @@ class BrowserHistory(Flox):
             else:
                 history = self.browser.history(limit=self.history_limit) if self.browser else []
                 source_items = [h for h in history if query.lower() in h.title.lower() or query.lower() in h.url.lower()]
+                source_items = [h for h in source_items if not self._is_domain_blocked(h.url)]
 
             for idx, item in enumerate(source_items):
                 self.add_item(
@@ -125,12 +139,13 @@ class BrowserHistory(Flox):
         unique_history.sort(key=lambda x: x.timestamp(), reverse=True)
 
         # Filter by query
-        return [
+        filtered_history = [
             item for item in unique_history
             if query.lower() in item.title.lower() or query.lower() in item.url.lower()
         ]
 
-        # (Unreachable with current structure; kept for clarity.)
+        # Filter out blocked domains
+        return [item for item in filtered_history if not self._is_domain_blocked(item.url)]
 
     def context_menu(self, data):
         self.add_item(
