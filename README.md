@@ -8,6 +8,7 @@ The **Browser History Plugin** for Flow Launcher allows you to quickly search an
 - **Custom Profiles**: Add custom Chromium-based or Firefox-based browser profiles for personalized history retrieval.
 - **Combined History**: Combine and sort history entries from all supported browsers into a single list.
 - **Profile Selection**: Automatically select the most recently updated profile or manually specify one.
+- **Domain Blocking**: Exclude specific domains from search results to filter out unwanted websites.
 
 ## 🚀 Installation
 
@@ -40,6 +41,7 @@ The plugin provides several settings to customize its behavior:
 | **Path to Profile Folder**       | Required ONLY if you select **Chromium Profile** or **Firefox Profile**. Must be a DIRECTORY (profile folder), not the History / places.sqlite file. | `N/A`                 |
 | **Combine History**              | When enabled, the plugin fetches and combines history from all supported browsers, including custom profiles. | `false`             |
 | **History Limit**                | Set the maximum number of history entries to fetch per browser. Decrease this value if you experience slowdowns. | `10000`             |
+| **Blocked Domains**              | Comma-separated list of domains to exclude from search results (e.g., facebook.com, twitter.com). Leave empty to show all domains. | `N/A`               |
 
 ## 🔧 Troubleshooting
 
