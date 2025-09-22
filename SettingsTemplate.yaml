@@ -48,6 +48,6 @@ body:
       name: blocked_domains
       label: Blocked Domains
       defaultValue: ''
-      description: Comma-separated list of domains to exclude from search results (e.g., facebook.com, twitter.com).
+      description: Comma-separated list of domains to exclude from search results. (e.g., facebook.com, twitter.com)
 
 
