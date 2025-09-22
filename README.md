@@ -34,11 +34,11 @@ The plugin provides several settings to customize its behavior:
 
 | Setting Name                     | Description                                                                                   | Default Value       |
 |:----------------------------------|:-----------------------------------------------------------------------------------------------|:---------------------:|
-| **Default Browser or Profile**   | Select the browser or profile to use by default. Choose **Chromium Profile** or **Firefox Profile** to target a specific profile directory. | `Chrome`            |
-| **Automatically Select Profile** | When enabled, the plugin selects the most recently updated profile for browsers that support multiple profiles. | `true`             |
+| **Choose a Browser or Profile**   | Select the browser or profile to use by default. Choose **Chromium Profile** or **Firefox Profile** to target a specific profile directory. | `Chrome`            |
+| **Select the Most Recently Used Profile** | When enabled, the plugin selects the most recently updated profile for browsers that support multiple profiles. | `true`             |
 | **Path to Profile Folder**       | Required ONLY if you select **Chromium Profile** or **Firefox Profile**. Must be a DIRECTORY (profile folder), not the History / places.sqlite file. | `N/A`                 |
-| **Combine History**              | When enabled, the plugin fetches and combines history from all supported browsers, including custom profiles. | `true`             |
-| **History Limit**                | Set the maximum number of history entries to fetch per browser. Decrease this value if you experience slowdowns. | `1000`             |
+| **Combine History from All Browsers**              | When enabled, the plugin fetches and combines history from all supported browsers, including custom profiles. | `true`             |
+| **Number of History Items to Load**                | Set the maximum number of history entries to fetch per browser. Decrease this value if you experience slowdowns. | `1000`             |
 | **Blocked Domains**              | Comma-separated list of domains to exclude from search results (e.g., facebook.com, twitter.com). Leave empty to show all domains. | `N/A`               |
 
 ## 🔧 Troubleshooting

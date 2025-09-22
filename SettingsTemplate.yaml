@@ -24,12 +24,12 @@ body:
   - type: checkbox
     attributes:
       name: profile_last_updated
-      label: Use the Most Recently Used Profile
+      label: Select the Most Recently Used Profile
       defaultValue: 'true'
   - type: inputWithFolderBtn
     attributes:
       name: custom_profile_path
-      label: Browser Profile Folder Path
+      label: Path to Profile Folder
       defaultValue: ''
       description: Only needed if picked "Chromium Profile" or "Firefox Profile".
   - type: checkbox
