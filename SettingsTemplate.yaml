@@ -30,6 +30,7 @@ body:
     attributes:
       name: custom_profile_path
       label: Browser Profile Folder Path
+      defaultValue: ''
       description: Only needed if picked "Chromium Profile" or "Firefox Profile".
   - type: checkbox
     attributes:
@@ -46,6 +47,7 @@ body:
     attributes:
       name: blocked_domains
       label: Blocked Domains
+      defaultValue: ''
       description: Comma-separated list of domains to exclude from search results (e.g., facebook.com, twitter.com).
 
 
