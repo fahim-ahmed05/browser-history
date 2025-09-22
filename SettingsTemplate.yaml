@@ -2,7 +2,7 @@ body:
   - type: dropdown
     attributes:
       name: default_browser
-      label: Choose Your Browser or Profile
+      label: Choose a Browser or Profile
       defaultValue: Chrome
       options:
         - Chrome
@@ -24,13 +24,13 @@ body:
   - type: checkbox
     attributes:
       name: profile_last_updated
-      label: Automatically Use the Most Recently Used Profile
+      label: Use the Most Recently Used Profile
       defaultValue: 'false'
   - type: inputWithFolderBtn
     attributes:
       name: custom_profile_path
-      label: Folder Path to Your Browser Profile
-      description: Only needed if you picked "Chromium Profile" or "Firefox Profile" above.
+      label: Browser Profile Folder Path
+      description: Only needed if picked "Chromium Profile" or "Firefox Profile".
   - type: checkbox
     attributes:
       name: all_browsers_history
@@ -42,5 +42,10 @@ body:
       label: Number of History Items to Load 
       defaultValue: '10000'
       description: This is the maximum number of history entries to load for each browser. The default is 10,000.
+  - type: textarea
+    attributes:
+      name: blocked_domains
+      label: Blocked Domains
+      description: Comma-separated list of domains to exclude from search results (e.g., facebook.com, twitter.com).
 
 
