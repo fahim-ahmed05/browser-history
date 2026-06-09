@@ -56,7 +56,7 @@ class BrowserHistory(Flox):
             p.strip() for p in custom_profile_path.split(",") if p.strip()
         ]
         self.history_limit = int(self.settings.get("history_limit", 1000))
-        self.max_ui_results = int(self.settings.get("max_ui_results", 100))
+        self.max_ui_results = int(self.settings.get("max_ui_results", 500))
 
         # Determine profile handling from the new dropdown setting
         profile_mode = self.settings.get("profile_search_mode", "Active Profile")
