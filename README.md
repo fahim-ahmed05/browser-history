@@ -71,7 +71,7 @@ To prevent search errors while your browser is open and actively locking the his
 * If you are an advanced user using "Custom Profile" option, make sure you entered the path to the exact folder containing your browser history files (like `History` or `places.sqlite`).
 
 **Typing in Flow Launcher feels slow or laggy.**
-* Go to the plugin settings and lower the **UI Results Limit** (for example, from 100 to 50). This limits the maximum number of final results sent to Flow Launcher to display.
+* Go to the plugin settings and lower the **UI Results Limit** (for example, from 500 to 250). This limits the maximum number of final results sent to Flow Launcher to display.
 
 **Results take too long to load.**
 * You might have too many history loading at once. Go to the plugin settings and lower the **History Limit** (try changing it from 1000 to 500).
