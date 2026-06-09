@@ -55,6 +55,23 @@ FIREFOX_QUERY = "SELECT url, title, visit_date FROM moz_places INNER JOIN moz_hi
 CHROMIUM_EPOCH_OFFSET = 11644473600
 
 
+def _get_chromium_profiles(base: Path, db_file: str) -> List[Path]:
+    if not base.exists():
+        return []
+    return [
+        p / db_file
+        for p in base.iterdir()
+        if p.is_dir()
+        and (p / db_file).exists()
+        and (p.name == "Default" or p.name.startswith("Profile "))
+    ]
+
+def _get_firefox_profiles(base: Path, db_file: str) -> List[Path]:
+    if not base.exists():
+        return []
+    return [p / db_file for p in base.iterdir() if p.is_dir() and (p / db_file).exists()]
+
+
 class Browser:
     """Represents a single browser profile history database."""
 
@@ -106,20 +123,9 @@ class Browser:
     def _select_chromium_profile(
         self, base: Path, db_file: str, last_updated: bool
     ) -> Path:
-        if not base.exists():
-            return None
-
-        candidates = [
-            p / db_file
-            for p in base.iterdir()
-            if p.is_dir()
-            and (p / db_file).exists()
-            and (p.name == "Default" or p.name.startswith("Profile "))
-        ]
-
+        candidates = _get_chromium_profiles(base, db_file)
         if not candidates:
             return None
-
         return (
             max(candidates, key=lambda p: p.stat().st_mtime)
             if last_updated
@@ -129,16 +135,9 @@ class Browser:
     def _select_firefox_profile(
         self, base: Path, db_file: str, last_updated: bool
     ) -> Path:
-        if not base.exists():
-            return None
-
-        candidates = [
-            p / db_file for p in base.iterdir() if p.is_dir() and (p / db_file).exists()
-        ]
-
+        candidates = _get_firefox_profiles(base, db_file)
         if not candidates:
             return None
-
         return (
             max(candidates, key=lambda p: p.stat().st_mtime)
             if last_updated
@@ -179,7 +178,9 @@ class Browser:
 
         return str(target)
 
-    def history(self, search_term: str = "", limit: int = 100) -> List["HistoryItem"]:
+    def history(
+        self, search_term: str = "", limit: int = 100, blocked_domains: Optional[List[str]] = None
+    ) -> List["HistoryItem"]:
         db_path = self._copy_database()
 
         last_err = None
@@ -198,25 +199,30 @@ class Browser:
 
         try:
             cursor = connection.cursor()
+            base, order = self.query.split(" ORDER BY ")
+            conditions = []
+            params = []
+
             if search_term:
                 terms = search_term.split()
-                base, order = self.query.split(" ORDER BY ")
-
-                conditions = []
-                params = []
-
                 # Require EVERY word to be present in either the title or the URL
                 for term in terms:
                     conditions.append("(title LIKE ? OR url LIKE ?)")
                     params.extend([f"%{term}%", f"%{term}%"])
+            
+            if blocked_domains:
+                for domain in blocked_domains:
+                    conditions.append("url NOT LIKE ?")
+                    params.append(f"%{domain}%")
 
+            if conditions:
                 where_clause = " AND ".join(conditions)
                 sql = f"{base} WHERE {where_clause} ORDER BY {order} LIMIT ?"
-
-                params.append(limit)
-                cursor.execute(sql, tuple(params))
             else:
-                cursor.execute(f"{self.query} LIMIT ?", (limit,))
+                sql = f"{base} ORDER BY {order} LIMIT ?"
+
+            params.append(limit)
+            cursor.execute(sql, tuple(params))
 
             rows = cursor.fetchall()
         finally:
@@ -224,20 +230,22 @@ class Browser:
         return [HistoryItem(self, *row) for row in rows]
 
     def convert_timestamp(self, raw_time):
+        seconds = self.normalize_timestamp(raw_time)
+        return datetime.fromtimestamp(seconds)
+
+    def normalize_timestamp(self, raw_time) -> float:
+        if raw_time is None:
+            return 0.0
         try:
-            if raw_time is None:
-                return datetime.fromtimestamp(0)
             if self.timestamp_type == "chromium":
                 seconds = raw_time / 1_000_000 - CHROMIUM_EPOCH_OFFSET
             elif self.timestamp_type == "unix_us":
                 seconds = raw_time / 1_000_000
             else:
-                seconds = 0
-            if seconds < 0:
-                seconds = 0
-            return datetime.fromtimestamp(seconds)
+                seconds = 0.0
+            return max(0.0, float(seconds))
         except OSError:
-            return datetime.fromtimestamp(0)
+            return 0.0
 
 
 class HistoryItem:
@@ -253,6 +261,9 @@ class HistoryItem:
 
     def timestamp(self) -> datetime:
         return self.browser.convert_timestamp(self.last_visit_time)
+
+    def normalized_time(self) -> float:
+        return self.browser.normalize_timestamp(self.last_visit_time)
 
 
 def get(
@@ -390,17 +401,9 @@ def get_all_profiles(
         return []
 
     if browser_name in CHROMIUM_PROFILE_BASES:
-        candidates = [
-            p
-            for p in base.iterdir()
-            if p.is_dir()
-            and (p / db_file).exists()
-            and (p.name == "Default" or p.name.startswith("Profile "))
-        ]
+        candidates = _get_chromium_profiles(base, db_file)
     else:
-        candidates = [
-            p for p in base.iterdir() if p.is_dir() and (p / db_file).exists()
-        ]
+        candidates = _get_firefox_profiles(base, db_file)
 
     for idx, path in enumerate(candidates):
         unique_name = f"{browser_name}_profile_{idx}"
@@ -411,7 +414,7 @@ def get_all_profiles(
                     query,
                     cache_dir,
                     ts_type,
-                    custom_path=path,
+                    custom_path=path.parent,
                     db_file=db_file,
                 )
             )
