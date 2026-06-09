@@ -56,6 +56,7 @@ class BrowserHistory(Flox):
             p.strip() for p in custom_profile_path.split(",") if p.strip()
         ]
         self.history_limit = int(self.settings.get("history_limit", 1000))
+        self.max_ui_results = int(self.settings.get("max_ui_results", 100))
 
         # Determine profile handling from the new dropdown setting
         profile_mode = self.settings.get("profile_search_mode", "Active Profile")
@@ -171,18 +172,6 @@ class BrowserHistory(Flox):
                 "Could not locate any supported browser profile databases."
             )
 
-    def _is_domain_blocked(self, url):
-        """Check if the domain of the given URL is in the blocked domains list."""
-        if not self.blocked_domains:
-            return False
-        try:
-            domain = urlparse(url).netloc.lower()
-            return any(
-                blocked_domain in domain for blocked_domain in self.blocked_domains
-            )
-        except Exception:
-            return False
-
     def query(self, query):
         if not self.browsers:
             self.add_item(
@@ -226,7 +215,11 @@ class BrowserHistory(Flox):
         for browser in self.browsers:
             try:
                 combined_history.extend(
-                    browser.history(search_term=query, limit=self.history_limit)
+                    browser.history(
+                        search_term=query,
+                        limit=self.history_limit,
+                        blocked_domains=self.blocked_domains,
+                    )
                 )
             except FileNotFoundError:
                 continue
@@ -237,13 +230,13 @@ class BrowserHistory(Flox):
         seen_urls = set()
         unique_history = []
         for item in combined_history:
-            if item.url not in seen_urls and not self._is_domain_blocked(item.url):
+            if item.url not in seen_urls:
                 unique_history.append(item)
                 seen_urls.add(item.url)
 
-        unique_history.sort(key=lambda x: x.timestamp(), reverse=True)
+        unique_history.sort(key=lambda x: x.normalized_time(), reverse=True)
 
-        return unique_history
+        return unique_history[: self.max_ui_results]
 
     def context_menu(self, data):
         self.add_item(
