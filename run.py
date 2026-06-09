@@ -5,6 +5,7 @@ def main():
     try:
         # Get the absolute path of the plugin directory
         plugindir = os.path.abspath(os.path.dirname(__file__))
+        os.chdir(plugindir)
 
         # Add necessary directories to the Python path
         directories = [
