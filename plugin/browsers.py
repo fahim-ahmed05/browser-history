@@ -279,7 +279,7 @@ def get(
         # Strictly check exact folder provided by the user
         if (path / "History").exists():
             return Browser(
-                "custom profile",
+                f"Custom Profile ({path.name})",
                 CHROMIUM_QUERY,
                 cache_dir,
                 "chromium",
@@ -288,7 +288,7 @@ def get(
             )
         elif (path / "places.sqlite").exists():
             return Browser(
-                "custom profile",
+                f"Custom Profile ({path.name})",
                 FIREFOX_QUERY,
                 cache_dir,
                 "unix_us",
@@ -346,7 +346,7 @@ def get_all_profiles(
         if (path / "History").exists():
             browsers_list.append(
                 Browser(
-                    "custom_profile_0",
+                    f"Custom Profile ({path.name})",
                     CHROMIUM_QUERY,
                     cache_dir,
                     "chromium",
@@ -357,7 +357,7 @@ def get_all_profiles(
         elif (path / "places.sqlite").exists():
             browsers_list.append(
                 Browser(
-                    "custom_profile_0",
+                    f"Custom Profile ({path.name})",
                     FIREFOX_QUERY,
                     cache_dir,
                     "unix_us",
