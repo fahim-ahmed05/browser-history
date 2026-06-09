@@ -42,13 +42,13 @@ For most people, the plugin will work perfectly right out of the box. However, y
 
 Here is what each setting does:
 
-* **Browser Selection:** By default, this is set to "All Browsers". You can change this if you only want to search one specific browser or a custom profile.
-* **Profile Search Mode:** Choose how the plugin handles browsers with multiple user profiles:
+* **Browser Selection:** By default, this is set to "All Browsers". You can change this if you only want to search one specific browser or custom profile(s).
+* **Profile Search Mode:** Choose how the plugin handles browsers with multiple user profiles, by default it is set to "Active Profile".
     * **Active Profile:** Searches only the history of the profile you used most recently.
     * **All Profiles:** Searches the history of every profile within the browser at the same time.
-* **Custom Profile Directories:** You can ignore this unless you selected "Custom Profile" in the first setting, or if you want to include custom profiles alongside "All Browsers". Provide a comma-separated list of folders containing your profile data, and the plugin will automatically detect how to read them (for example: `C:\Users\Username\AppData\Local\Google\Chrome\User Data\Profile 1, C:\Users\Username\AppData\Roaming\Mozilla\Firefox\Profiles\abc123yz.default`).
+* **Custom Profile Directories:** This option is only relevant if you selected "Custom Profile" in the first setting, or if you want to include other profile(s) alongside "All Browsers". Provide a comma-separated list of folders containing your profile data, and the plugin will automatically detect how to read them (for example: `C:\Users\Username\AppData\Local\Google\Chrome\User Data\Profile 1, C:\Users\Username\AppData\Roaming\Mozilla\Firefox\Profiles\abc123yz.default`).
 * **History Limit:** This is the maximum number of past websites the plugin will search through per profile from the database. The default is 1,000. 
-* **UI Results Limit:** This is the maximum number of final, sorted results that are actually sent to Flow Launcher to display. The default is 100.
+* **UI Results Limit:** This is the maximum number of final, sorted results that are actually sent to Flow Launcher to display. The default is 500.
 * **Blocked Domains:** Type in the web addresses of any sites you don't want showing up in your search results. Separate them with commas (for example: `facebook.com, twitter.com, youtube.com`).
 
 ## Privacy & Data Handling
