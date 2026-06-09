@@ -42,6 +42,12 @@ body:
       label: History Limit
       defaultValue: "1000"
       description: Maximum number of recent history entries to retrieve per browser profile.
+  - type: input
+    attributes:
+      name: max_ui_results
+      label: UI Results Limit
+      defaultValue: "100"
+      description: Maximum number of final results to display in Flow Launcher. Lower this if the search UI feels laggy.
   - type: textarea
     attributes:
       name: blocked_domains
