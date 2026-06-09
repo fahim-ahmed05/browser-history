@@ -46,7 +46,7 @@ Here is what each setting does:
 * **Profile Search Mode:** Choose how the plugin handles browsers with multiple user profiles:
     * **Active Profile:** Searches only the history of the profile you used most recently.
     * **All Profiles:** Searches the history of every profile within the browser at the same time.
-* **Custom Profile Directory:** You can ignore this unless you selected "Custom Profile" in the first setting. Point this to the folder containing your profile data, and the plugin will automatically detect how to read it.
+* **Custom Profile Directories:** You can ignore this unless you selected "Custom Profile" in the first setting, or if you want to include custom profiles alongside "All Browsers". Provide a comma-separated list of folders containing your profile data, and the plugin will automatically detect how to read them (for example: `C:\Users\Username\AppData\Local\Google\Chrome\User Data\Profile 1, C:\Users\Username\AppData\Roaming\Mozilla\Firefox\Profiles\abc123yz.default`).
 * **History Limit:** This is the maximum number of past websites the plugin will load per profile. The default is 1,000. If Flow Launcher feels slow when you type, try lowering this number. 
 * **Blocked Domains:** Type in the web addresses of any sites you don't want showing up in your search results. Separate them with commas (for example: `facebook.com, twitter.com, youtube.com`).
 
@@ -57,6 +57,7 @@ To prevent search errors while your browser is open and actively locking the his
 **Privacy Features:**
 * **Local Storage:** The cached databases are stored securely inside Flow Launcher's designated User Data directory (`%APPDATA%\FlowLauncher\Settings\Plugins\Browser History V2`). If you uninstall or remove the plugin, the cache is automatically deleted with it.
 * **Portable Mode Security:** If you run Flow Launcher in Portable Mode on a USB drive, the plugin continuously monitors the name of the host computer. If the computer name changes, the plugin automatically wipes the cache folder to ensure your private history data does not accidentally travel to or get exposed on a different machine.
+* **Automatic Cache Cleanup:** To keep your storage clean over time, the plugin runs a background garbage collector once every 24 hours. Any orphaned cache files (such as profiles you have deleted) that haven't been modified in the last 7 days are automatically removed.
 
 > [!WARNING]
 >
