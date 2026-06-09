@@ -68,7 +68,7 @@ To prevent search errors while your browser is open and actively locking the his
 
 **The plugin isn't showing any results.**
 * Make sure you have actually browsed the web on this computer so there is a history to search.
-* If you are an advanced user using a "Custom Profile Directory," make sure you pointed the setting to the exact folder containing your database files (like `History` or `places.sqlite`).
+* If you are an advanced user using "Custom Profile" option, make sure you entered the path to the exact folder containing your browser history files (like `History` or `places.sqlite`).
 
 **Typing in Flow Launcher feels slow or laggy.**
 * Go to the plugin settings and lower the **UI Results Limit** (for example, from 100 to 50). This limits the maximum number of final results sent to Flow Launcher to display.
