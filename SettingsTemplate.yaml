@@ -30,21 +30,21 @@ body:
       options:
         - Active Profile
         - All Profiles
-  - type: inputWithFolderBtn
+  - type: textarea
     attributes:
       name: custom_profile_path
-      label: Custom Profile Directory
-      defaultValue: ''
-      description: Required only if "Custom Profile" is selected, or if you want to include a custom profile with "All Browsers".
+      label: Custom Profile Directories
+      defaultValue: ""
+      description: Comma-separated list of custom profile paths. Required only if "Custom Profile" is selected, or if you want to include custom profiles with "All Browsers".
   - type: input
     attributes:
       name: history_limit
       label: History Limit
-      defaultValue: '1000'
+      defaultValue: "1000"
       description: Maximum number of recent history entries to retrieve per browser profile.
   - type: textarea
     attributes:
       name: blocked_domains
       label: Blocked Domains
-      defaultValue: ''
+      defaultValue: ""
       description: Comma-separated list of domains to hide from search results (e.g., facebook.com, twitter.com).

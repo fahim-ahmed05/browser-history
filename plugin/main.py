@@ -37,7 +37,10 @@ class BrowserHistory(Flox):
         ).lower()
         self.all_browsers_history = self.default_browser == "all browsers"
 
-        self.custom_profile_path = self.settings.get("custom_profile_path", "")
+        custom_profile_path = self.settings.get("custom_profile_path", "")
+        self.custom_paths = [
+            p.strip() for p in custom_profile_path.split(",") if p.strip()
+        ]
         self.history_limit = int(self.settings.get("history_limit", 1000))
 
         # Determine profile handling from the new dropdown setting
@@ -68,29 +71,30 @@ class BrowserHistory(Flox):
         for browser_name in browser_names:
             # Handle the manual custom profile choice robustly
             if browser_name == CUSTOM_PROFILE:
-                if not self.custom_profile_path:
-                    self.init_error = "Custom Profile selected, but no directory path was provided in settings."
+                if not self.custom_paths:
+                    self.init_error = "Custom Profile selected, but no directory paths were provided in settings."
                     continue
-                try:
-                    if self.search_all_profiles:
-                        profiles = browsers.get_all_profiles(
-                            browser_name,
-                            self.cache_dir,
-                            custom_profile_path=self.custom_profile_path,
-                        )
-                        if profiles:
-                            self.browsers.extend(profiles)
-                    else:
-                        b = browsers.get(
-                            browser_name,
-                            self.cache_dir,
-                            custom_profile_path=self.custom_profile_path,
-                            profile_last_updated=self.profile_last_updated,
-                        )
-                        if b:
-                            self.browsers.append(b)
-                except Exception as e:
-                    self.init_error = str(e)  # Bubbles the exact error up to the UI
+                for c_path in self.custom_paths:
+                    try:
+                        if self.search_all_profiles:
+                            profiles = browsers.get_all_profiles(
+                                browser_name,
+                                self.cache_dir,
+                                custom_profile_path=c_path,
+                            )
+                            if profiles:
+                                self.browsers.extend(profiles)
+                        else:
+                            b = browsers.get(
+                                browser_name,
+                                self.cache_dir,
+                                custom_profile_path=c_path,
+                                profile_last_updated=self.profile_last_updated,
+                            )
+                            if b:
+                                self.browsers.append(b)
+                    except Exception as e:
+                        self.init_error = str(e)  # Bubbles the exact error up to the UI
                 continue
 
             # Auto-detect standard profiles or search all
@@ -108,26 +112,27 @@ class BrowserHistory(Flox):
                     self.browsers.append(b)
 
         # In "All Browsers" mode, if a custom path is ALSO provided, append it
-        if self.all_browsers_history and self.custom_profile_path:
-            try:
-                if self.search_all_profiles:
-                    b_custom_list = browsers.get_all_profiles(
-                        CUSTOM_PROFILE,
-                        self.cache_dir,
-                        custom_profile_path=self.custom_profile_path,
-                    )
-                    self.browsers.extend(b_custom_list)
-                else:
-                    b_custom = browsers.get(
-                        CUSTOM_PROFILE,
-                        self.cache_dir,
-                        custom_profile_path=self.custom_profile_path,
-                        profile_last_updated=self.profile_last_updated,
-                    )
-                    if b_custom:
-                        self.browsers.append(b_custom)
-            except Exception:
-                pass  # Fail silently for the background custom injection so that don't block normal browsers
+        if self.all_browsers_history and self.custom_paths:
+            for c_path in self.custom_paths:
+                try:
+                    if self.search_all_profiles:
+                        b_custom_list = browsers.get_all_profiles(
+                            CUSTOM_PROFILE,
+                            self.cache_dir,
+                            custom_profile_path=c_path,
+                        )
+                        self.browsers.extend(b_custom_list)
+                    else:
+                        b_custom = browsers.get(
+                            CUSTOM_PROFILE,
+                            self.cache_dir,
+                            custom_profile_path=c_path,
+                            profile_last_updated=self.profile_last_updated,
+                        )
+                        if b_custom:
+                            self.browsers.append(b_custom)
+                except Exception:
+                    pass  # Fail silently for the background custom injection so that don't block normal browsers
 
         # Different browser variants can resolve to the same profile database path.
         # Keep only the first instance per resolved DB path to avoid duplicate reads/caches.
