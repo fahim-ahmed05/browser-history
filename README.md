@@ -47,7 +47,8 @@ Here is what each setting does:
     * **Active Profile:** Searches only the history of the profile you used most recently.
     * **All Profiles:** Searches the history of every profile within the browser at the same time.
 * **Custom Profile Directories:** You can ignore this unless you selected "Custom Profile" in the first setting, or if you want to include custom profiles alongside "All Browsers". Provide a comma-separated list of folders containing your profile data, and the plugin will automatically detect how to read them (for example: `C:\Users\Username\AppData\Local\Google\Chrome\User Data\Profile 1, C:\Users\Username\AppData\Roaming\Mozilla\Firefox\Profiles\abc123yz.default`).
-* **History Limit:** This is the maximum number of past websites the plugin will load per profile. The default is 1,000. If Flow Launcher feels slow when you type, try lowering this number. 
+* **History Limit:** This is the maximum number of past websites the plugin will search through per profile from the database. The default is 1,000. 
+* **UI Results Limit:** This is the maximum number of final, sorted results that are actually sent to Flow Launcher to display. The default is 100. Lower this number if Flow Launcher feels slow or laggy while you type.
 * **Blocked Domains:** Type in the web addresses of any sites you don't want showing up in your search results. Separate them with commas (for example: `facebook.com, twitter.com, youtube.com`).
 
 ## Privacy & Data Handling
