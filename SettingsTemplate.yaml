@@ -7,20 +7,20 @@ body:
       description: Select 'All Browsers' to search every supported browser, a specific browser, or a 'Custom Profile'.
       options:
         - All Browsers
-        - Chrome
-        - Firefox
-        - Edge
+        - Arc
         - Brave
         - Brave Nightly
-        - Opera
-        - Vivaldi
-        - Arc
-        - Zen
-        - Floorp
-        - Thorium
-        - Helium
-        - Waterfox
+        - Chrome
         - Custom Profile
+        - Edge
+        - Firefox
+        - Floorp
+        - Helium
+        - Opera
+        - Thorium
+        - Vivaldi
+        - Waterfox
+        - Zen
   - type: dropdown
     attributes:
       name: profile_search_mode
@@ -46,8 +46,8 @@ body:
     attributes:
       name: max_ui_results
       label: UI Results Limit
-      defaultValue: "100"
-      description: Maximum number of final results to display in Flow Launcher. Lower this if the search UI feels laggy.
+      defaultValue: "500"
+      description: Maximum number of final results to display in Flow Launcher.
   - type: textarea
     attributes:
       name: blocked_domains
