@@ -4,6 +4,7 @@ import browsers
 from urllib.parse import urlparse
 import platform
 import shutil
+import time
 from pathlib import Path
 
 # Constants
@@ -30,6 +31,19 @@ class BrowserHistory(Flox):
 
         # Ensure the cache directory exists for this session
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+        # Garbage collection for old caches
+        current_time = time.time()
+        last_cleanup = self.settings.get("last_cache_cleanup", 0)
+        if current_time - last_cleanup > 86400:  # Check once every 24 hours
+            for cache_file in self.cache_dir.iterdir():
+                if cache_file.is_file():
+                    if current_time - cache_file.stat().st_mtime > (7 * 86400):
+                        try:
+                            cache_file.unlink()
+                        except OSError:
+                            pass
+            self.settings["last_cache_cleanup"] = current_time
 
         # Read the unified dropdown
         self.default_browser = self.settings.get(
