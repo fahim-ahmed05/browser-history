@@ -50,6 +50,7 @@ Here is what each setting does:
 * **History Limit:** This is the maximum number of past websites the plugin will search through per profile from the database. The default is 1,000. 
 * **UI Results Limit:** This is the maximum number of final, sorted results that are actually sent to Flow Launcher to display. The default is 500.
 * **Blocked Domains:** Type in the web addresses of any sites you don't want showing up in your search results. Separate them with commas (for example: `facebook.com, twitter.com, youtube.com`).
+* **Keep History Cache:** If enabled, keeps separate browser caches for each computer. This speeds up searches and drastically reduces cloud sync thrashing (e.g., OneDrive, Dropbox) when switching between computers. By default, this is disabled and the plugin completely wipes the cache on a computer switch for privacy.
 
 ## Privacy & Data Handling
 
@@ -57,7 +58,7 @@ To prevent search errors while your browser is open and actively locking the his
 
 **Privacy Features:**
 * **Local Storage:** The cached databases are stored securely inside Flow Launcher's designated User Data directory (`%APPDATA%\FlowLauncher\Settings\Plugins\Browser History V2`). If you uninstall or remove the plugin, the cache is automatically deleted with it.
-* **Portable Mode Security:** If you run Flow Launcher in Portable Mode on a USB drive, the plugin continuously monitors the name of the host computer. If the computer name changes, the plugin automatically wipes the cache folder to ensure your private history data does not accidentally travel to or get exposed on a different machine.
+* **Portable Mode Security:** If you run Flow Launcher in Portable Mode on a USB drive, the plugin continuously monitors the name of the host computer. If the computer name changes, the plugin automatically wipes the cache folder to ensure your private history data does not accidentally travel to or get exposed on a different machine. (Note: You can override this behavior by enabling "Keep History Cache" in the settings if you use a cloud sync provider and want to avoid regenerating the cache).
 * **Automatic Cache Cleanup:** To keep your storage clean over time, the plugin runs a background garbage collector once every 24 hours. Any orphaned cache files (such as profiles you have deleted) that haven't been modified in the last 7 days are automatically removed.
 
 > [!WARNING]

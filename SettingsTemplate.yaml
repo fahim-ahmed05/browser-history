@@ -54,3 +54,9 @@ body:
       label: Blocked Domains
       defaultValue: ""
       description: Comma-separated list of domains to hide from search results (e.g., facebook.com, twitter.com).
+  - type: checkbox
+    attributes:
+      name: keep_history_cache
+      label: Keep History Cache
+      defaultValue: False
+      description: Keeps separate browser caches for each computer to speed up searches and reduce cloud sync usage when switching computers.

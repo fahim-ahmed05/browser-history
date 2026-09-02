@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import platform
 import shutil
 import sqlite3
 import time
@@ -147,10 +148,11 @@ class Browser:
     def _copy_database(self) -> str:
         """Copy the locked original DB to a uniquely named cache file for safe reading."""
         safe_name = self.name.replace(" ", "_")
+        safe_pc = platform.node().replace(" ", "_")
 
         # Hash the absolute path to prevent cache collisions between different custom profiles
         path_hash = hashlib.md5(str(self.database_path).encode("utf-8")).hexdigest()[:8]
-        cache_name = f"bh_{safe_name}_{path_hash}_cache.sqlite"
+        cache_name = f"bh_{safe_pc}_{safe_name}_{path_hash}_cache.sqlite"
         target = self.cache_dir / cache_name
 
         # Check if we already have a cached copy that is up to date

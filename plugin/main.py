@@ -22,11 +22,13 @@ class BrowserHistory(Flox):
 
         current_pc = platform.node()
         saved_pc = self.settings.get("last_computer_name", "")
+        keep_cache = self.settings.get("keep_history_cache", False)
 
         # If the computer name changed (e.g., Portable mode moved to a new PC), wipe the cache
         if current_pc != saved_pc:
-            if self.cache_dir.exists():
-                shutil.rmtree(self.cache_dir, ignore_errors=True)
+            if not keep_cache:
+                if self.cache_dir.exists():
+                    shutil.rmtree(self.cache_dir, ignore_errors=True)
             self.settings["last_computer_name"] = current_pc
 
         # Ensure the cache directory exists for this session
